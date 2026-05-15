@@ -12,6 +12,7 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:media_scanner/media_scanner.dart';
 
 // Instancia global para las notificaciones
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -116,14 +117,25 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
   }
 
   void _processSharedText(String text) {
+    // Extraemos el link limpio usando la expresión regular
     RegExp regExp = RegExp(r"(https?://[^\s]+)");
     var match = regExp.firstMatch(text);
+
     if (match != null) {
-      if (_saveDirectoryMp4 == null || _saveDirectoryMp3 == null) {
-        setState(() => _urlController.text = match.group(0)!);
-      } else {
-        _startNewDownload(match.group(0)!);
-      }
+      setState(() {
+        // 1. Solo pegamos el texto en la caja, NO iniciamos la descarga
+        _urlController.text = match.group(0)!;
+      });
+
+      // 2. Opcional: Si quieres que la lista de descargas se limpie o algo al recibir un link nuevo
+      // puedes hacerlo aquí, pero por ahora solo pegamos el link.
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Enlace recibido. Selecciona el formato y presiona descargar.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -413,6 +425,13 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
 
       File tempFile = File(tempPath);
       await tempFile.copy(finalPath);
+
+      // --- ¡LA MAGIA DE ANDROID ESTÁ AQUÍ! ---
+      // Le avisamos al escáner de Android que indexe el archivo nuevo inmediatamente
+      if (Platform.isAndroid) {
+        await MediaScanner.loadMedia(path: finalPath);
+      }
+      // ----------------------------------------
 
       _updateTaskState(task, () {
         task.status = '¡Guardado en ${targetDirectory.split('/').last}!';
