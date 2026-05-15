@@ -13,6 +13,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true // <-- AÑADIDO: Activa el traductor (Desugaring)
     }
 
     kotlinOptions {
@@ -32,6 +33,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true // <-- AÑADIDO: Previene el límite de código
     }
 
     buildTypes {
@@ -45,4 +47,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+// <-- AÑADIDO: Librería oficial para que el Desugaring funcione
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 }

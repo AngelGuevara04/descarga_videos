@@ -37,8 +37,12 @@ dependencies:
   youtube_explode_dart: ^3.1.0
   path_provider: ^2.1.5
   permission_handler: ^12.0.1
-  flutter_file_dialog: ^3.0.3
   ffmpeg_kit_flutter_audio: 6.0.3
+  receive_sharing_intent: ^1.8.1
+  http: ^1.6.0
+  file_picker: ^11.0.2
+  shared_preferences: ^2.5.5
+  flutter_local_notifications: 16.0.0
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +54,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -92,3 +97,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: false # Ponlo en true si algún día la sacas para iPhone
+  image_path: "assets/LogoApexDL.png"
+  min_sdk_android: 24 # Para que coincida con nuestra configuración de FFmpeg
